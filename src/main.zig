@@ -26,7 +26,7 @@ pub fn Fenwick(comptime T: type) type {
 
             var i: usize = 0;
             while (i < instance.data.len) : (i += 1) {
-                instance.update(i, numbers[@intCast(usize, i)]);
+                instance.update(i, numbers[@intCast(i)]);
             }
 
             return instance;
@@ -42,7 +42,7 @@ pub fn Fenwick(comptime T: type) type {
         /// The cumulutative sum up to `index`
         pub fn sum(self: *@This(), index: usize) T {
             var cumulative_sum: T = 0;
-            var i: isize = @intCast(isize, index);
+            var i: isize = @intCast(index);
 
             // While this implements 0-based indexing, it's easier to visualize the algorithm with
             // 1-based indexing representing a tree of partial sums. Every item at an index that's a
@@ -50,7 +50,7 @@ pub fn Fenwick(comptime T: type) type {
             // parent "node" in the prefix tree, which is added to the sum. The process repeats
             // until the root node is found.
             while (i >= 0) {
-                cumulative_sum += self.data[@intCast(usize, i)];
+                cumulative_sum += self.data[@intCast(i)];
                 i = (i & (i + 1)) - 1;
             }
             return cumulative_sum;
@@ -73,13 +73,13 @@ pub fn Fenwick(comptime T: type) type {
         /// Return a single element's value
         pub fn get(self: *@This(), index: usize) T {
             var val: T = self.data[index];
-            var i: isize = @intCast(isize, index);
+            const i: isize = @intCast(index);
             var pow_of_two: isize = 1;
             while ((i & pow_of_two) == pow_of_two) : (pow_of_two <<= 1) {
-                val -= self.data[@intCast(usize, i - pow_of_two)];
+                val -= self.data[@intCast(i - pow_of_two)];
             }
-            
-            return val;            
+
+            return val;
         }
 
         /// Set a single element's value and recalculate prefix sums
@@ -111,7 +111,7 @@ test "update" {
     try expectEqual(fenwick.get(5), 10);
     fenwick.set(5, 9);
     try expectEqual(fenwick.get(5), 9);
-    try expectEqual(fenwick.sum(9), 11);    
+    try expectEqual(fenwick.sum(9), 11);
 }
 
 test "set" {
@@ -121,19 +121,19 @@ test "set" {
 
     var i: i32 = 0;
     while (i < N) : (i += 1) {
-        fenwick.set(@intCast(usize, i), i + 1);
+        fenwick.set(@intCast(i), i + 1);
     }
 
     i = 0;
     while (i < N) : (i += 1) {
-        fenwick.set(@intCast(usize, i), i + 1);
-    }    
-    try expectEqual(fenwick.sum(N-1), gauss(N));
+        fenwick.set(@intCast(i), i + 1);
+    }
+    try expectEqual(fenwick.sum(N - 1), gauss(N));
 
     i = 0;
     while (i < N) : (i += 1) {
-        try expectEqual(fenwick.get(@intCast(usize, i)), i + 1);
-    }    
+        try expectEqual(fenwick.get(@intCast(i)), i + 1);
+    }
 }
 
 test "empty" {
@@ -195,10 +195,10 @@ test "larger range" {
     var buffer = [_]u16{0} ** (264);
     var fenwick = Fenwick(u16).initFrom(&buffer, &data);
 
-    try expectEqual(fenwick.sum(0), 1);    
+    try expectEqual(fenwick.sum(0), 1);
     try expectEqual(fenwick.sum(263), 8844);
     try expectEqual(fenwick.sum(262), 8844 - 66);
-    try expectEqual(fenwick.sumRange(1,263), 8843);
+    try expectEqual(fenwick.sumRange(1, 263), 8843);
     try expectEqual(fenwick.sumRange(10, 12), 36);
     try expectEqual(fenwick.sumRange(82, 129), 1944);
     try expectEqual(fenwick.sumRange(82, 83), 17 + 18);

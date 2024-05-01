@@ -5,23 +5,18 @@ The main purpose of a Fenwick tree is to efficiently maintain prefix sums. The d
 
 The need to update and query partial sums frequently comes up in competitive programming challenges, but also crop up in real-world applications. 
 
+zigwick never allocates and have no dependencies, not even the standard library (except for tests)
+
 ## Building
+This library requires a recent Zig build. Last tested with `0.13.0-dev.47+c231d9496`.
 
 To build the library and test it:
 
 ```
 zig build
-zig test
+zig build test
 ```
 
-## Importing the library
-Add zigwick as a Zig package in your build file, or simply import it directly after vendoring/adding a submodule:
-
-```zig
-const zigwick = @import("zigwick/src/main.zig");
-```
-
-The library never allocates and have no dependencies, not even the standard library (except for tests)
 
 ## Types of use
 
